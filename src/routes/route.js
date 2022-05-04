@@ -18,14 +18,14 @@ router.post("/login",authorController.login);
 
 router.post("/createBlog",blogControllers.createBlogs);
 
-router.get("/blogs",middleware.authentication,blogControllers.getBlogs);
+router.get("/blogs", blogControllers.getBlogs);
 
-router.put("/Blogs/:blogId",middleware.authentication,middleware.authUser,blogControllers.updateBlogs);
+router.put("/Blogs/:blogId",middleware.authentication ,blogControllers.updateBlogs);
 
-router.delete("/blogs/:blogId",middleware.authentication,middleware.authUser,blogControllers.validateBlog);
+router.delete("/blogs/:blogId",middleware.authentication ,blogControllers.validateBlog);
 
 router.delete("/Blogs",middleware.authentication,blogControllers.deleteBlogsByQuery);
-
+ 
 
 
 module.exports = router;

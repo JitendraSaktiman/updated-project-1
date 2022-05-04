@@ -2,25 +2,27 @@ const AuthorModel = require("../models/authorModel")
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
+//-----------------------------------------create author-----------------------------
+
 
 const createAuthors = async function (req, res) {
     try {
         let a = req.body;
         if (Object.keys(a).length != 0) {
-            // We have handled edge cases here
+            // We have handled edge cases here or validation
             if (a.fname === undefined || a.lname === undefined || a.title === undefined || a.password === undefined) {
                 return res.status(400).send({ status: false, msg: "Mandatory field missing" })
             }
             if (a.fname.trim().length == 0 || a.lname.trim().length == 0 || a.title.trim().length == 0 || a.password.trim().length == 0) {
-                return res.status(400).send({ status: false, msg: "input missing" })
+                return res.status(400).send({ status: false, msg: "input missing/or fill right value" })
             }
             let checkEmail = await AuthorModel.findOne({ email: a.email })
             if (checkEmail) return res.status(409).send({ msg: "Email already exist" })
 
             if (!(/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(a.email))) {
-                return res.status(400).send({ status: false, message: 'email should be a valid email address' })
+                return res.status(400).send({ status: false, message: 'email should be a valid email address or not present' })
             }
-
+        
             //  here the model is created in database
             let savedDate = await AuthorModel.create(a)
             res.status(201).send({ status: true, data: savedDate })
@@ -37,6 +39,9 @@ const createAuthors = async function (req, res) {
 module.exports.createAuthors = createAuthors;
 
 
+//--------------------------------------------------login -------------------------------------
+
+
 const login = async function (req, res) {
 
     let userName = req.body.email;
@@ -44,7 +49,7 @@ const login = async function (req, res) {
 
     let user = await AuthorModel.findOne({ email: userName, password: pass });
     if (!user)
-        return res.send({
+        return res.status(400).send({
             status: false,
             msg: "username or the password is not correct",
         });
@@ -58,7 +63,7 @@ const login = async function (req, res) {
         "bloggers"
     );
     res.setHeader("x-api-key", token);
-    res.send({ status: true, data: token });
+    res.status(200).send({ status: true, data: token });
 };
 
 

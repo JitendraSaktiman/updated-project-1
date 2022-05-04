@@ -14,6 +14,9 @@ const authentication = async function (req, res, next) {
         if (!decodedToken) {
             res.status(401).send({ status: false, msg: "token is invalid" })
         }
+
+        req.authorId = decodedToken.authorId
+
         req["decodedToken"] = decodedToken 
 
         next()
@@ -22,39 +25,41 @@ const authentication = async function (req, res, next) {
     }
 }
 
-const authUser = async function (req, res, next) {
-    try {
+module.exports.authentication = authentication 
+
+// const authUser = async function (req, res, next) {
+//     try {
     
-        let authorId= req.decodedToken.authorId
-        // console.log(authorId)
+//         let authorId= req.decodedToken.authorId
+//         // console.log(authorId)
 
-        let blogId = req.params.blogId
-        // console.log(blogId)
+//         let blogId = req.params.blogId
+//         // console.log(blogId)
 
-        let blog = await BlogModel.findOne( {authorId: authorId, _id:blogId})
+//         let blog = await BlogModel.findOne( {authorId: authorId, _id:blogId})
 
-        if (!blog) {
-            return res.status(403).send({ status: false, msg: "Blog does not exist" })
-        } 
+//         if (!blog) {
+//             return res.status(403).send({ status: false, msg: "Blog does not exist" })
+//         } 
 
-        next()
+//         next()
 
-    } catch (err) {
-        return res.status(500).send({ status: false, msg: err.message })
-    }
+//     } catch (err) {
+//         return res.status(500).send({ status: false, msg: err.message })
+//     }
 
-}
-
-
-
-
-
-module.exports = { authentication, authUser }
-
-
-
-
-// let authordata = blog.authorId.toString()
-// if (authordata != decode) {
-//     return res.send("Not Authorised!")
 // }
+
+
+
+
+
+// module.exports = { authentication, authUser }
+
+
+
+
+// // let authordata = blog.authorId.toString()
+// // if (authordata != decode) {
+// //     return res.send("Not Authorised!")
+// // }
